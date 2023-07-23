@@ -1,11 +1,7 @@
-
 prefix=@CMAKE_INSTALL_PREFIX@
-exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
-
-libsc_CC=@SC_CC@
-libsc_CFLAGS=@SC_CPPFLAGS@ @SC_CFLAGS@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 
 have_mpi=@mpi_pc@
 have_json=@sc_have_json_pc@

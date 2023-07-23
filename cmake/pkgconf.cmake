@@ -13,18 +13,17 @@ convert_yn(SC_HAVE_JSON sc_have_json_pc)
 convert_yn(zlib zlib_pc)
 convert_yn(SC_ENABLE_DEBUG debug_build_pc)
 
-set(pc_filename libsc-${git_version}.pc)
+set(pc_filename "libsc-${PROJECT_VERSION}.pc")
 configure_file(${CMAKE_CURRENT_LIST_DIR}/pkgconf.pc.in ${pc_filename} @ONLY)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${pc_filename}
-        DESTINATION lib/pkgconfig)
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
-set(pc_target ${pc_filename})
-set(pc_link ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig/libsc.pc)
+set(pc_link libsc.pc)
 
-install(CODE "execute_process( \
-    COMMAND ${CMAKE_COMMAND} -E create_symlink \
-    ${pc_target} \
-    ${pc_link}   \
-    )"
-  )
+execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+  ${pc_filename}
+  ${pc_link}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${pc_link}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)

@@ -4,7 +4,7 @@ include(CMakePackageConfigHelpers)
 
 configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/config.cmake.in
 ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake
-INSTALL_DESTINATION cmake
+INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
 )
 
 write_basic_package_version_file(
@@ -14,13 +14,13 @@ COMPATIBILITY SameMajorVersion
 
 install(EXPORT ${PROJECT_NAME}-targets
 NAMESPACE ${PROJECT_NAME}::
-DESTINATION cmake
+DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
 )
 
 install(FILES
 ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake
 ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake
-DESTINATION cmake
+DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
 )
 
 export(EXPORT ${PROJECT_NAME}-targets

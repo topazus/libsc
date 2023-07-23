@@ -1,12 +1,10 @@
 cmake_minimum_required(VERSION 3.14...3.25)
 
-include(cmake/git.cmake)
-
 project(SC
 LANGUAGES C
 HOMEPAGE_URL https://www.p4est.org/
 DESCRIPTION "The SC library supports parallel scientific applications."
-VERSION ${PROJECT_VERSION})
+VERSION 2.8.5)
 
 enable_testing()
 
@@ -20,6 +18,10 @@ endif()
 include(cmake/options.cmake)
 message(STATUS "libsc ${PROJECT_VERSION} "
                "install prefix: ${CMAKE_INSTALL_PREFIX}")
+
+set(PROJECT_MAJOR ${PROJECT_VERSION_MAJOR})
+set(PROJECT_MINOR ${PROJECT_VERSION_MINOR})
+set(PROJECT_PATCH ${PROJECT_VERSION_PATCH})
 # options.cmake before config.cmake to determine user intent
 include(cmake/config.cmake)
 
@@ -39,8 +41,13 @@ target_include_directories(libb64 PRIVATE libb64)
 # --- sc
 add_library(sc $<TARGET_OBJECTS:iniparser> $<TARGET_OBJECTS:libb64>)
 target_compile_features(sc PRIVATE c_std_99)
-set_property(TARGET sc PROPERTY EXPORT_NAME SC)
-set_property(TARGET sc PROPERTY VERSION ${PROJECT_VERSION})
+set_target_properties(
+    sc PROPERTIES
+    EXPORT_NAME SC
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+)
+
 target_include_directories(sc
 PRIVATE iniparser libb64
 PUBLIC
@@ -62,13 +69,14 @@ target_link_libraries(SC::SC INTERFACE sc)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/ ${PROJECT_BINARY_DIR}/include/
 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 FILES_MATCHING PATTERN "*.h"
+PATTERN "sc_builtin" EXCLUDE
 )
 
 install(TARGETS sc
   EXPORT ${PROJECT_NAME}-targets
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 add_subdirectory(src)
 add_subdirectory(example)
@@ -78,10 +86,6 @@ if(BUILD_TESTING)
 endif(BUILD_TESTING)
 
 # --- packaging
-
-install(FILES
-${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindSC.cmake
-DESTINATION cmake)
 
 include(cmake/pkgconf.cmake)
 include(cmake/install.cmake)
